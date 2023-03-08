@@ -10,7 +10,7 @@ router = APIRouter()
     name='dev:ping',
     status_code=status.HTTP_200_OK
 )
-async def ping(request: Request):
+async def ping():
     return 'pong'
 
 
