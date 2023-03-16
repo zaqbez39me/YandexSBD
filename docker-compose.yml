@@ -7,24 +7,20 @@ services:
     ports:
       - 8080:8080
     restart: always
-    links:
-      - db:db_domain
     depends_on:
       - db
+    links:
+      - db
+    networks:
+      - enrollment
+
 
   db:
     container_name: db
-    image: mariadb:10.5
-    volumes:
-      - dbvolume:/var/lib/mysql
-    ports:
-      - 3306:3306
-    restart: always
-    environment:
-      MYSQL_DATABASE: common
-      MYSQL_USER: db_user
-      MYSQL_PASSWORD: db_password
-      MYSQL_ROOT_PASSWORD: db_password
+    image: postgres:15.2-alpine
+    networks:
+      - enrollment
 
-volumes:
-  dbvolume:
+networks:
+  enrollment:
+    driver: bridge
