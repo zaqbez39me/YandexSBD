@@ -3,17 +3,22 @@ from datetime import time
 
 from pydantic import BaseModel, validator
 from pydantic.types import conint, constr
-int32 = conint(strict=False, ge=-2**31, le=2**31 - 1)
-int64 = conint(strict=False, ge=-2**63, le=2**63 - 1)
+
+int32 = conint(strict=False, ge=-(2**31), le=2**31 - 1)
+int64 = conint(strict=False, ge=-(2**63), le=2**63 - 1)
 
 
 class Hours(BaseModel):
-    hours: constr(regex='(([0-1][0-9])|(2[0-3])):[0-5][0-9]-(([0-1]['
-                        '0-9])|(2[0-3])):[0-5][0-9]')
+    hours: constr(
+        regex="(([0-1][0-9])|(2[0-3])):[0-5][0-9]-(([0-1]["
+        "0-9])|(2[0-3])):[0-5][0-9]"
+    )
 
-    @validator('hours')
+    @validator("hours")
     def validate_hours(cls, hours):
-        start_hour, start_minute, finish_hour, finish_minute = map(int, re.split("[:-]", hours))
+        start_hour, start_minute, finish_hour, finish_minute = map(
+            int, re.split("[:-]", hours)
+        )
         start_time = time(hour=start_hour, minute=start_minute)
         finish_time = time(hour=finish_hour, minute=finish_minute)
         if finish_time < start_time:
@@ -33,7 +38,10 @@ class Hours(BaseModel):
     def do_intersect(self, other: "Hours"):
         other_start, other_end = other.start_time, other.end_time
         self_start, self_end = self.start_time, self.end_time
-        return other_start < self_end < other_end or self_start < other_start < self_end
+        return (
+            other_start < self_end < other_end
+            or self_start < other_start < self_end
+        )
 
 
 class HoursList(list[Hours]):
@@ -44,7 +52,7 @@ class HoursList(list[Hours]):
     @classmethod
     def validate(cls, v):
         if not isinstance(v, list):
-            raise ValueError('List of hours strings required')
+            raise ValueError("List of hours strings required")
         return cls.working_hours_validator(v)
 
     @classmethod
@@ -64,7 +72,9 @@ class HoursList(list[Hours]):
                 if hours_instances[i].do_intersect(hours_instances[i + 1]):
                     if "time_intersect_error" not in errors:
                         errors["time_intersect_error"] = []
-                    errors["time_intersect_error"].append(f'{hours[i]} intersects with {hours[i + 1]}')
+                    errors["time_intersect_error"].append(
+                        f"{hours[i]} intersects with {hours[i + 1]}"
+                    )
         if errors:
             raise ValueError(errors)
         return hours

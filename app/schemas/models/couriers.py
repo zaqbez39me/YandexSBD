@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from app.schemas.models.common import int32, int64, HoursList
+from app.schemas.models.common import HoursList, int32, int64
 
 
 class CourierTypeEnum(str, Enum):

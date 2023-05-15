@@ -34,7 +34,10 @@ class DatabaseEngine:
     def __init__(self, database_url: str):
         self.__engine = create_async_engine(database_url)
         self.__session_maker = async_sessionmaker(
-            bind=self.__engine, autocommit=False, class_=AsyncSession, autoflush=False
+            bind=self.__engine,
+            autocommit=False,
+            class_=AsyncSession,
+            autoflush=False,
         )
 
     async def start(self) -> None:

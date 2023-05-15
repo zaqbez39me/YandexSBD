@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.schemas.models.orders import CreateOrderDto, CompleteOrder
+from app.schemas.models.orders import CompleteOrder, CreateOrderDto
 
 
 class CreateOrderRequest(BaseModel):
